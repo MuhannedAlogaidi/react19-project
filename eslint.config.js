@@ -8,13 +8,23 @@ import prettierConfig from 'eslint-config-prettier';
 
 export default [
   {
-    ignores: ['dist', 'node_modules', 'coverage', 'playwright-report'],
+    ignores: [
+      'dist',
+      'node_modules',
+      'coverage',
+      'playwright-report',
+      'public/mockServiceWorker.js',
+      '**/*.js',
+    ],
   },
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
       parser: tsparser,
       parserOptions: {
         ecmaVersion: 'latest',
@@ -32,7 +42,7 @@ export default [
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': [
         'warn',
-        { allowConstantExport: true },
+        { allowConstantExport: true, allowExportNames: ['useAuth'] },
       ],
       '@typescript-eslint/no-unused-vars': [
         'error',
