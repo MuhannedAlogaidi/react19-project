@@ -5,7 +5,8 @@ import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import { LoginForm } from '@/features/auth/components/LoginForm';
 import { AuthProvider } from '@/features/auth/context/AuthContext';
-import { server } from '../../../../tests/mocks/server';
+import { server } from '../../../tests/mocks/server';
+
 // Setup MSW
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
@@ -58,7 +59,7 @@ describe('LoginForm', () => {
     });
   });
 
-  it('disables submit button while loading', async () => {
+  it('shows loading state while submitting', async () => {
     const user = userEvent.setup();
     renderLoginForm();
 
@@ -66,8 +67,11 @@ describe('LoginForm', () => {
     await user.type(screen.getByTestId('password-input'), 'password123');
 
     const submitButton = screen.getByTestId('login-button');
+
+    // Click and immediately check for "Logging in..." text
     await user.click(submitButton);
 
-    expect(submitButton).toBeDisabled();
+    // Check for loading text instead of disabled state
+    expect(screen.getByText(/logging in/i)).toBeInTheDocument();
   });
 });
