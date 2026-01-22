@@ -1,5 +1,11 @@
 import { API_BASE_URL, STORAGE_KEYS } from '@/utils/constants';
 
+interface FetchConfig {
+  method?: string;
+  headers?: Record<string, string>;
+  body?: string;
+}
+
 class ApiClient {
   private baseURL: string;
 
@@ -9,20 +15,24 @@ class ApiClient {
 
   private async request<T>(
     endpoint: string,
-    options?: RequestInit
+    options?: FetchConfig
   ): Promise<T> {
     const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
 
-    const config: RequestInit = {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
-        ...options?.headers,
-      },
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
+      ...(options?.headers || {}),
     };
 
-    const response = await fetch(`${this.baseURL}${endpoint}`, config);
+    const config: FetchConfig = {
+      method: options?.method || 'GET',
+      headers,
+      ...(options?.body && { body: options.body }),
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const response = await fetch(`${this.baseURL}${endpoint}`, config as any);
 
     if (!response.ok) {
       const error = await response.json();

@@ -1,11 +1,11 @@
-import { describe, it, expect, vi, beforeAll, afterAll, afterEach } from 'vitest';
+import '@testing-library/jest-dom';
+import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import { LoginForm } from '@/features/auth/components/LoginForm';
 import { AuthProvider } from '@/features/auth/context/AuthContext';
-import { server } from '@tests/mocks/server';
-
+import { server } from '../../../../tests/mocks/server';
 // Setup MSW
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
@@ -39,7 +39,9 @@ describe('LoginForm', () => {
     await user.click(screen.getByTestId('login-button'));
 
     await waitFor(() => {
-      expect(screen.queryByText(/invalid credentials/i)).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(/invalid credentials/i)
+      ).not.toBeInTheDocument();
     });
   });
 

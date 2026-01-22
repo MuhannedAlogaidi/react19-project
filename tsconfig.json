@@ -30,7 +30,8 @@
       "@/lib/*": ["src/lib/*"],
       "@/store/*": ["src/store/*"],
       "@/utils/*": ["src/utils/*"],
-      "@/types/*": ["src/types/*"]
+      "@/types/*": ["src/types/*"],
+      "@tests/*": ["tests/*"] // ← Add this line
     }
   },
   "include": ["src"],

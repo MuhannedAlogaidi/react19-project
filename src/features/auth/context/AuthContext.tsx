@@ -24,9 +24,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await authApi.login(credentials);
       setUser(response.user, response.token);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
-      throw err;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Login failed';
+      setError(message);
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -36,8 +37,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await authApi.logout();
       clearUser();
-    } catch (err) {
-      console.error('Logout failed:', err);
+    } catch (error) {
+      console.error('Logout failed:', error);
     }
   };
 

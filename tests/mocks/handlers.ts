@@ -3,7 +3,8 @@ import { http, HttpResponse } from 'msw';
 export const handlers = [
   // Auth endpoints
   http.post('/api/auth/login', async ({ request }) => {
-    const { email, password } = await request.json();
+    const body = (await request.json()) as { email: string; password: string };
+    const { email, password } = body;
 
     if (email === 'test@example.com' && password === 'password123') {
       return HttpResponse.json({
@@ -48,7 +49,7 @@ export const handlers = [
   }),
 
   http.post('/api/cart/add', async ({ request }) => {
-    const item = await request.json();
+    const item = (await request.json()) as Record<string, unknown>;
     return HttpResponse.json({ ...item, id: Date.now().toString() });
   }),
 

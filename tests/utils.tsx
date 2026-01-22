@@ -34,5 +34,5 @@ export const waitFor = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 // Re-export everything from React Testing Library
-export * from '@testing-library/react';
 export { renderWithProviders as render };
+export * from '@testing-library/react';

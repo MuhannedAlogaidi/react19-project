@@ -17,7 +17,7 @@ export function LoginForm() {
     try {
       await login({ email, password });
       navigate(ROUTES.HOME);
-    } catch (err) {
+    } catch {
       // Error is handled by context
     }
   };
