@@ -20,8 +20,7 @@ export function Button({
   const variants = {
     primary: 'bg-primary-600 text-white hover:bg-primary-700',
     secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300',
-    outline:
-      'border-2 border-primary-600 text-primary-600 hover:bg-primary-50',
+    outline: 'border-2 border-primary-600 text-primary-600 hover:bg-primary-50',
     danger: 'bg-red-600 text-white hover:bg-red-700',
   };
 
