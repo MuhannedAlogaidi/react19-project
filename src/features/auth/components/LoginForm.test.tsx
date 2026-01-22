@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import { LoginForm } from '@/features/auth/components/LoginForm';
 import { AuthProvider } from '@/features/auth/context/AuthContext';
-import { server } from '../../../tests/mocks/server';
+import { server } from '../../../../tests/mocks/server';
 
 // Setup MSW
 beforeAll(() => server.listen());
