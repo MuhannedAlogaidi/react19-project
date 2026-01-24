@@ -1,24 +1,33 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useLocalStorage } from './useLocalStorage';
 
 describe('useLocalStorage', () => {
   beforeEach(() => {
+    // Clear all mocks before each test
+    vi.clearAllMocks();
     localStorage.clear();
   });
 
   it('returns initial value when localStorage is empty', () => {
+    vi.mocked(localStorage.getItem).mockReturnValue(null);
+
     const { result } = renderHook(() => useLocalStorage('test-key', 'initial'));
     expect(result.current[0]).toBe('initial');
   });
 
   it('returns stored value from localStorage', () => {
-    localStorage.setItem('test-key', JSON.stringify('stored-value'));
+    vi.mocked(localStorage.getItem).mockReturnValue(
+      JSON.stringify('stored-value')
+    );
+
     const { result } = renderHook(() => useLocalStorage('test-key', 'initial'));
     expect(result.current[0]).toBe('stored-value');
   });
 
   it('updates localStorage when value changes', () => {
+    vi.mocked(localStorage.getItem).mockReturnValue(null);
+
     const { result } = renderHook(() => useLocalStorage('test-key', 'initial'));
 
     act(() => {
@@ -26,10 +35,15 @@ describe('useLocalStorage', () => {
     });
 
     expect(result.current[0]).toBe('new-value');
-    expect(localStorage.getItem('test-key')).toBe(JSON.stringify('new-value'));
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      'test-key',
+      JSON.stringify('new-value')
+    );
   });
 
   it('works with objects', () => {
+    vi.mocked(localStorage.getItem).mockReturnValue(null);
+
     const { result } = renderHook(() =>
       useLocalStorage('test-object', { count: 0 })
     );
@@ -39,17 +53,17 @@ describe('useLocalStorage', () => {
     });
 
     expect(result.current[0]).toEqual({ count: 5 });
-    expect(JSON.parse(localStorage.getItem('test-object')!)).toEqual({
-      count: 5,
-    });
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      'test-object',
+      JSON.stringify({ count: 5 })
+    );
   });
 
   it('handles localStorage errors gracefully', () => {
-    // Mock localStorage to throw error
-    const originalSetItem = Storage.prototype.setItem;
-    Storage.prototype.setItem = () => {
+    vi.mocked(localStorage.getItem).mockReturnValue(null);
+    vi.mocked(localStorage.setItem).mockImplementation(() => {
       throw new Error('Quota exceeded');
-    };
+    });
 
     const { result } = renderHook(() => useLocalStorage('test-key', 'initial'));
 
@@ -59,8 +73,5 @@ describe('useLocalStorage', () => {
 
     // Should not crash
     expect(result.current[0]).toBe('new-value');
-
-    // Restore original
-    Storage.prototype.setItem = originalSetItem;
   });
 });

@@ -10,19 +10,35 @@ interface UserState {
   isAuthenticated: () => boolean;
 }
 
+const getStoredToken = () => {
+  try {
+    return localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+  } catch {
+    return null;
+  }
+};
+
 export const useUserStore = create<UserState>((set, get) => ({
   user: null,
-  token: localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN),
+  token: getStoredToken(),
 
   setUser: (user, token) => {
-    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
-    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+    try {
+      localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+    } catch (error) {
+      console.error('Failed to store user data:', error);
+    }
     set({ user, token });
   },
 
   clearUser: () => {
-    localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
-    localStorage.removeItem(STORAGE_KEYS.USER);
+    try {
+      localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.USER);
+    } catch (error) {
+      console.error('Failed to clear user data:', error);
+    }
     set({ user: null, token: null });
   },
 
